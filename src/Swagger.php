@@ -34,17 +34,24 @@ class Swagger extends AbstractExternalTask implements TaskInterface
     public function run(ContextInterface $context): TaskResultInterface
     {
         $config = $this->getConfig()->getOptions();
-        $arguments = $this->processBuilder->createArgumentsForCommand('curl');
-        $arguments->addOptionalArgument('--request %s', $config['request']);
-        $arguments->addOptionalArgument(
-            '-s -o /dev/null -w "%{http_code}" --insecure --url "%s"',
-            $config['swagger_schema_url']
-        );
-        $process = $this->processBuilder->buildProcess($arguments);
-        $process->run();
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $config['swagger_schema_url']);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        curl_setopt($ch, CURLOPT_NOBODY, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FAILONERROR, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt ($ch, CURLOPT_HTTPGET, true);
 
-        if (!$process->isSuccessful() || $process->getOutput() != 200) {
-            return TaskResult::createFailed($this, $context, $this->formatter->format($process));
+        $response = curl_exec($ch);
+        $error = curl_error($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode != 200) {
+            return TaskResult::createFailed($this, $context, sprintf("swagger schema failed to generate. code: %s", $httpCode));
         }
 
         return TaskResult::createPassed($this, $context);
