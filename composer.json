@@ -1,0 +1,21 @@
+{
+    "name": "adapttive/grumphp-swagger",
+    "description": "Swagger schema check task for GrumPHP",
+    "type": "grumphp-task",
+    "require": {
+        "phpro/grumphp": "^0.19.1"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Milind Singh",
+            "email": "milind7@live.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Adapttive\\GrumpPHP": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
