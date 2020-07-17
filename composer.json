@@ -3,6 +3,7 @@
     "description": "Swagger schema check task for GrumPHP",
     "type": "grumphp-task",
     "require": {
+        "ext-curl": "*",
         "phpro/grumphp": "^0.19.1"
     },
     "license": "MIT",
@@ -14,7 +15,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Adapttive\\GrumpPHP": "src/"
+            "Adapttive\\GrumpPHP\\": "src/"
         }
     },
     "minimum-stability": "stable"
